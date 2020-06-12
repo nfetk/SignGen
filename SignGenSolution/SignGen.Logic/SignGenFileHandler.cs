@@ -8,6 +8,12 @@ namespace SignGen.Logic
 {
     internal static class Extension
     {
+        /// <summary>
+        /// Fügt alle Items eines <see cref="IEnumerable{T}"/> zu einer bestehenden Instanz, welche <see cref="IList{T}"/> implementiert, hinzu
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="l">Die zu erweiternde <see cref="IList{T}"/></param>
+        /// <param name="additions">Eine hinzuzufügende Instanz, welche <see cref="IEnumerable{T}"/> implementiert</param>
         public static void AddMulti<T>(this IList<T> l, IEnumerable<T> additions)
         {
             foreach (var item in additions)
@@ -22,10 +28,16 @@ namespace SignGen.Logic
     /// </summary>
     internal class SignGenFileHandler
     {
-        public virtual IEnumerable<IDictionary<string, string>> ReadInputFile(string path)
+        /// <summary>
+        /// Liest zeilenweise die Konfiguration ein und gibt Schlüssel-Wert-Paare pro Zeile wieder
+        /// </summary>
+        /// <param name="path">Der Pfad zur Konfigurationsdatei</param>
+        /// <param name="encoding">Ein optinaler Parameter bei abweichendem Encoding</param>
+        /// <returns></returns>
+        public virtual IEnumerable<IDictionary<string, string>> ReadInputFile(string path, string encoding = "UTF-8")
         {
             var entries = new List<IDictionary<string, string>>();
-            var lines = ReadFileLines(path);
+            var lines = ReadFileLines(path, encoding);
             if (lines.Any())
             {
                 var template = lines.First().Split(";")
@@ -60,12 +72,13 @@ namespace SignGen.Logic
         /// Liest eine komplette Datei Zeile für Zeile ein, wenn sie gefunden wird
         /// </summary>
         /// <param name="path">Der Pfad zur einzulesenden Datei</param>
+        /// <param name="encoding">Ein optinaler Parameter bei abweichendem Encoding</param>
         /// <returns></returns>
-        public virtual IList<string> ReadFileLines(string path)
+        public virtual IList<string> ReadFileLines(string path, string encoding = "UTF-8")
         {
             try
             {
-                return File.ReadAllLines(path).ToList();
+                return File.ReadAllLines(path, GetEncoding(encoding)).ToList();
             }
             catch
             {
@@ -77,12 +90,13 @@ namespace SignGen.Logic
         /// Liest den kompletten Inhalt einer Datei als einen Text ein, wenn sie gefunden wird
         /// </summary>
         /// <param name="path">Der Pfad zur einzulesenden Datei</param>
+        /// <param name="encoding">Ein optinaler Parameter bei abweichendem Encoding</param>
         /// <returns></returns>
-        public virtual string ReadFileText(string path)
+        public virtual string ReadFileText(string path, string encoding = "UTF-8")
         {
             try
             {
-                return File.ReadAllText(path);
+                return File.ReadAllText(path, GetEncoding(encoding));
             }
             catch
             {
@@ -95,12 +109,13 @@ namespace SignGen.Logic
         /// </summary>
         /// <param name="path">Der Pfad zur zu beschreibenden Datei</param>
         /// <param name="text">Der zu schreibende Text</param>
+        /// <param name="encoding">Ein optinaler Parameter bei abweichendem Encoding</param>
         /// <returns></returns>
-        public virtual bool WriteFileText(string path, string text)
+        public virtual bool WriteFileText(string path, string text, string encoding = "UTF-8")
         {
             try
             {
-                File.WriteAllText(path, text);
+                File.WriteAllText(path, text, GetEncoding(encoding));
                 return true;
             }
             catch
@@ -166,12 +181,13 @@ namespace SignGen.Logic
         /// </summary>
         /// <param name="source">Der Quellpfad der Datei</param>
         /// <param name="target">Der Zielpfad der Datei</param>
+        /// <param name="overwrite">Ein optionaler Parameter, welcher angibt ob vorhandene Dateien überschrieben werden sollen</param>
         /// <returns></returns>
-        public virtual bool CopyToTarget(string source, string target)
+        public virtual bool CopyToTarget(string source, string target, bool overwrite = false)
         {
             try
             {
-                File.Copy(source, target);
+                File.Copy(source, target, overwrite);
             }
             catch
             {
@@ -185,10 +201,11 @@ namespace SignGen.Logic
         /// Kopiert eine Datei von Quelle zu Ziel und gibt einen Wert zurück der den Erfolg der Aktion in Form eines <see cref="bool"/> widerspiegelt
         /// </summary>
         /// <param name="st">Ein aus <see cref="GetTargetFileName(string, string)"/> generiertes <see cref="Tuple{string,string}"/> mit Quell- und Zielpfad.</param>
+        /// <param name="overwrite">Ein optionaler Parameter, welcher angibt ob vorhandene Dateien überschrieben werden sollen</param>
         /// <returns></returns>
-        public virtual bool CopyToTarget(Tuple<string, string> st)
+        public virtual bool CopyToTarget(Tuple<string, string> st, bool overwrite = false)
         {
-            return CopyToTarget(st.Item1, st.Item2);
+            return CopyToTarget(st.Item1, st.Item2, overwrite);
         }
 
         /// <summary>
@@ -196,15 +213,50 @@ namespace SignGen.Logic
         /// </summary>
         /// <param name="filePath">Der Pfad zur einzulesenden Datei</param>
         /// <param name="replacements">Die einzufügenden Schlüssel-Wert-Paare</param>
+        /// <param name="encoding">Ein optinaler Parameter bei abweichendem Encoding</param>
         /// <returns></returns>
-        public virtual bool ReplaceKeysInFile(string filePath, IDictionary<string,string> replacements)
+        public virtual bool ReplaceKeysInFile(string filePath, IDictionary<string,string> replacements, string encoding = "UTF-8")
         {
-            var text = ReadFileText(filePath);
+            var text = ReadFileText(filePath, encoding);
             if (string.IsNullOrEmpty(text))
                 return false;
             var newText = SignGenTextHelper.ReplaceKeysInText(text, replacements);
 
-            return WriteFileText(filePath, newText);
+            return WriteFileText(filePath, newText, encoding);
+        }
+
+        /// <summary>
+        /// Verbindet zwei Pfade (Gedacht für Pfad + Dateiname) und hängt einen Suffix an, sofern angegeben
+        /// </summary>
+        /// <param name="path">Der Pfad, an den angehangen werden soll</param>
+        /// <param name="name">Der anzuhängende Pfad</param>
+        /// <param name="suffix">Optionaler Suffix für den Pfad (z.B. Dateiendung)</param>
+        /// <returns></returns>
+        public virtual string GetFileName(string path, string name, string suffix = null)
+        {
+            return Path.Combine(path, name + (suffix ?? string.Empty));
+        }
+
+        /// <summary>
+        /// Versucht abhängig von <paramref name="enc"/> das am besten passende Encoding zu ermitteln und gibt dieses zurück
+        /// </summary>
+        /// <param name="enc">Der Schlüssel für das gewünschte Encoding</param>
+        /// <returns></returns>
+        public virtual Encoding GetEncoding(string enc)
+        {
+            int e = 0;
+            if (int.TryParse(enc, out e))
+            {
+                return Encoding.GetEncoding(e);
+            }
+            else if (!string.IsNullOrEmpty(enc))
+            {
+                return Encoding.GetEncodings().FirstOrDefault(e => e.Name.ToUpper() == enc.ToUpper())?.GetEncoding();
+            }
+            else
+            {
+                return Encoding.Default;
+            }
         }
     }
 }

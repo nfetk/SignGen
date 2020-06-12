@@ -26,13 +26,18 @@ namespace SignGen.ConsoleApp
         private static void Execute(IConfiguration config)
         {
             SignGenLauncher launcher = null;
+            bool overwrite = false;
             var input = config.GetSection("InputConfigPath").Value;
             var logo = config.GetSection("CompanyLogoPath").Value;
             var target = config.GetSection("TargetDirectory").Value;
+            var image = config.GetSection("AccountImageDirectory").Value;
+            var encoding = config.GetSection("DefaultEncoding").Value;
+            var imageFileType = config.GetSection("DefaultImageFileType").Value;
             var templates = config.GetSection("TemplatePathes").GetChildren().Select(c => c.Value).ToList();
+            bool.TryParse(config.GetSection("OverwriteExisting").Value, out overwrite);
             try
             {
-                launcher = new SignGenLauncher(input, templates, logo, target);
+                launcher = new SignGenLauncher(input, templates, logo, target, image, encoding, imageFileType, overwrite);
             }
             catch (ArgumentException e)
             {
