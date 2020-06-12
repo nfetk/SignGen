@@ -9,9 +9,23 @@ namespace SignGen.ConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Wilkommen bei SignGen!");
-            SignGenLauncher launcher = null;
             var config = GetConfiguration(args);
+            Console.WriteLine("Wilkommen bei SignGen!");
+            Console.WriteLine("Möchten Sie Signaturen generieren? (j/n)");
+            string entered = Console.ReadLine();
+            while (entered == "j" || entered == "J")
+            {
+                Execute(config);
+                Console.WriteLine("Möchten Sie erneut generieren? (j/n)");
+                entered = Console.ReadLine();
+            }
+            Console.Write("Drücken Sie eine beliebige Taste, um SignGen zu beenden...");
+            Console.ReadKey();
+        }
+
+        private static void Execute(IConfiguration config)
+        {
+            SignGenLauncher launcher = null;
             var input = config.GetSection("InputConfigPath").Value;
             var logo = config.GetSection("CompanyLogoPath").Value;
             var target = config.GetSection("TargetDirectory").Value;
@@ -53,7 +67,7 @@ namespace SignGen.ConsoleApp
         private static IConfiguration GetConfiguration(string[] args)
         {
             return new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
         }
     }
