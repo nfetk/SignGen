@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.0": {
+      "SignGen.GUI/1.0.0": {
+        "runtime": {
+          "SignGen.GUI.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SignGen.GUI/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

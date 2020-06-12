@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <AssemblyName>SignGen</AssemblyName>
+    <AssemblyName>SignGen.Console</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
