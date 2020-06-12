@@ -1,7 +1,7 @@
-﻿using SignGen.ConsoleApp.Properties;
+﻿using Microsoft.Extensions.Configuration;
 using SignGen.Logic;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace SignGen.ConsoleApp
 {
@@ -11,15 +11,11 @@ namespace SignGen.ConsoleApp
         {
             Console.WriteLine("Wilkommen bei SignGen!");
             SignGenLauncher launcher = null;
-            var input = Resources.InputConfigPath;
-            var logo = Resources.CompanyLogoPath;
-            var templatesString = Resources.TemplatePathes;
-            var target = Resources.TargetDirectory;
-            IEnumerable<string> templates = null;
-            if (!string.IsNullOrEmpty(templatesString))
-            {
-                templates = templatesString.Split(";");
-            }
+            var config = GetConfiguration(args);
+            var input = config.GetSection("InputConfigPath").Value;
+            var logo = config.GetSection("CompanyLogoPath").Value;
+            var target = config.GetSection("TargetDirectory").Value;
+            var templates = config.GetSection("TemplatePathes").GetChildren().Select(c => c.Value).ToList();
             try
             {
                 launcher = new SignGenLauncher(input, templates, logo, target);
@@ -54,11 +50,11 @@ namespace SignGen.ConsoleApp
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            });
+        private static IConfiguration GetConfiguration(string[] args)
+        {
+            return new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .Build();
+        }
     }
 }
