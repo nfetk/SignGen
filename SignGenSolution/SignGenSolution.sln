@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignGen.Logic", "SignGen.Logic\SignGen.Logic.csproj", "{FB11831A-BA84-4231-BDAC-BDF8084C9ADB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignGen.ConsoleApp", "SignGen.ConsoleApp\SignGen.ConsoleApp.csproj", "{4BDC030B-2624-4490-BD08-0B713BE3D71F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FB11831A-BA84-4231-BDAC-BDF8084C9ADB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB11831A-BA84-4231-BDAC-BDF8084C9ADB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB11831A-BA84-4231-BDAC-BDF8084C9ADB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB11831A-BA84-4231-BDAC-BDF8084C9ADB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BDC030B-2624-4490-BD08-0B713BE3D71F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BDC030B-2624-4490-BD08-0B713BE3D71F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BDC030B-2624-4490-BD08-0B713BE3D71F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BDC030B-2624-4490-BD08-0B713BE3D71F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {19D40F9B-CE9D-4727-A816-35485C0FBEBA}
+	EndGlobalSection
+EndGlobal
