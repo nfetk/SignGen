@@ -7,4 +7,8 @@
     <AssemblyName>SignGen.GUI</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SignGen.Logic\SignGen.Logic.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -23,6 +23,18 @@ namespace SignGen.Logic
         }
     }
 
+    public static class SignGenFileInfoProvider
+    {
+        public static IEnumerable<string> GetEncodings()
+        {
+            return Encoding.GetEncodings().Select(e => e.Name.ToLower()).ToList();
+        }
+        public static string GetDefaultEncoding()
+        {
+            return Encoding.Default?.HeaderName?.ToLower();
+        }
+    }
+
     /// <summary>
     /// Hilfsklasse für alle IO-Aktionen mit Dateien. Vorerst nicht static, damit für Erweiterungen überschrieben werden kann
     /// </summary>

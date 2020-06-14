@@ -39,6 +39,11 @@ namespace SignGen.Logic
             DefaultEncoding = defaultEncoding ?? string.Empty;
             ImageFileType = imageFileType ?? string.Empty;
             TemplatePathes = templates.ToList();
+
+            if (!(string.IsNullOrEmpty(ImageFileType) || ImageFileType.StartsWith(".")))
+            {
+                ImageFileType = "." + ImageFileType;
+            }
         }
 
         protected virtual bool OverwriteExisting { get; set; }

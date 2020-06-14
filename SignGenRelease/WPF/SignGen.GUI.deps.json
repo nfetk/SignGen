@@ -7,14 +7,27 @@
   "targets": {
     ".NETCoreApp,Version=v3.0": {
       "SignGen.GUI/1.0.0": {
+        "dependencies": {
+          "SignGen.Logic": "1.0.0"
+        },
         "runtime": {
           "SignGen.GUI.dll": {}
+        }
+      },
+      "SignGen.Logic/1.0.0": {
+        "runtime": {
+          "SignGen.Logic.dll": {}
         }
       }
     }
   },
   "libraries": {
     "SignGen.GUI/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SignGen.Logic/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
