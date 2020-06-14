@@ -12,10 +12,21 @@
     </Window.DataContext>
 
     <Grid>
+        <Grid.Resources>
+            <Style x:Key="OpenFileButtonStyle" TargetType="Button">
+                <Setter Property="Content" Value="..."/>
+                <Setter Property="Command" Value="{Binding OpenFileCommand}"/>
+                <Setter Property="Width" Value="20"/>
+                <Setter Property="Margin" Value="3,0,3,0"/>
+                <Setter Property="DockPanel.Dock" Value="Right"/>
+            </Style>    
+        </Grid.Resources>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        
         <Border BorderThickness="1" BorderBrush="Black" Grid.Row="0"/>
         <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <Grid>
@@ -38,13 +49,13 @@
 
                 <TextBlock Text="Konfigurationspfad (CSV)" Margin="5" Grid.Column="0" Grid.Row="0"/>
                 <DockPanel LastChildFill="True" Margin="5" Grid.Column="1" Grid.Row="0">
-                    <Button DockPanel.Dock="Right" Content="..." Command="{Binding OpenFileCommand}" CommandParameter="InputConfigPath"/>
+                    <Button Style="{StaticResource OpenFileButtonStyle}" CommandParameter="InputConfigPath"/>
                     <TextBox DockPanel.Dock="Right" Text="{Binding InputConfigPath, Mode=TwoWay}"/>
                 </DockPanel>
 
                 <TextBlock Text="Logopfad" Margin="5" Grid.Column="0" Grid.Row="1"/>
                 <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" Margin="5" Grid.Column="1" Grid.Row="1">
-                    <Button DockPanel.Dock="Right" Content="..." Command="{Binding OpenFileCommand}" CommandParameter="CompanyLogoPath"/>
+                    <Button Style="{StaticResource OpenFileButtonStyle}" CommandParameter="CompanyLogoPath"/>
                     <TextBox DockPanel.Dock="Right" Text="{Binding CompanyLogoPath, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
                 </DockPanel>
 
@@ -65,13 +76,14 @@
                 <Border BorderThickness="1" BorderBrush="Black" Padding="3" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" Grid.RowSpan="3"/>
 
                 <TextBlock Text="Vorlagen" Margin="5" Grid.Column="0" Grid.Row="7"/>
-                <ListBox x:Name="templateList" ItemsSource="{Binding TemplatePathes, Mode=OneWay}" Margin="5" Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="2" MinHeight="100">
+                <ListBox x:Name="templateList" ItemsSource="{Binding TemplatePathes, Mode=OneWay}" HorizontalContentAlignment="Stretch" Margin="5" Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="2" MinHeight="100">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="X" Command="{Binding DataContext.RemoveItemCommand, ElementName=templateList}" CommandParameter="{Binding Mode=OneWay}" Margin="3"/>
-                                <TextBox Text="{Binding Item, Mode=TwoWay}" Margin="3"/>
-                            </StackPanel>
+                            <DockPanel LastChildFill="True">
+                                <Button DockPanel.Dock="Right" Content="X" Command="{Binding DataContext.RemoveItemCommand, ElementName=templateList}" CommandParameter="{Binding Mode=OneWay}" Width="20" Margin="3"/>
+                                <Button Style="{StaticResource OpenFileButtonStyle}" Command="{Binding DataContext.OpenFileCommand, ElementName=templateList}" CommandParameter="{Binding Mode=OneWay}" Margin="3"/>
+                                <TextBox DockPanel.Dock="Right" Text="{Binding Item, Mode=TwoWay}" Margin="3"/>
+                            </DockPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

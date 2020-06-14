@@ -5,6 +5,7 @@ using SignGen.WpfApp.Other;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 
@@ -79,7 +80,7 @@ namespace SignGen.WpfApp.ViewModel
             get => _overwriteExisting;
             set => Update(value, ref _overwriteExisting);
         }
-        public virtual ObservableCollection<BindingWrapper<string>> TemplatePathes { get; set; } = new ObservableCollection<BindingWrapper<string>>() { new BindingWrapper<string>("test") };
+        public virtual ObservableCollection<BindingWrapper<string>> TemplatePathes { get; set; } = new ObservableCollection<BindingWrapper<string>>();
 
         #endregion
 
@@ -122,17 +123,26 @@ namespace SignGen.WpfApp.ViewModel
 
         protected virtual void OpenFile(object parameter)
         {
+            PropertyInfo pi = null;
+            object target = null;
             if (parameter is string)
             {
                 var param = parameter as string;
-                var pi = this.GetType().GetProperty(param);
-                if (pi != null && pi.PropertyType == typeof(string))
+                pi = this.GetType().GetProperty(param);
+                target = this;
+            }
+            else if (parameter is BindingWrapper<string>)
+            {
+                pi = parameter.GetType().GetProperty(nameof(BindingWrapper<string>.Item));
+                target = parameter;
+            }
+
+            if (target != null && pi != null && pi.PropertyType == typeof(string))
+            {
+                var dlg = new OpenFileDialog();
+                if (dlg.ShowDialog() == true)
                 {
-                    var dlg = new OpenFileDialog();
-                    if (dlg.ShowDialog() == true)
-                    {
-                        pi.SetValue(this, dlg.FileName);
-                    }
+                    pi.SetValue(target, dlg.FileName);
                 }
             }
         }
